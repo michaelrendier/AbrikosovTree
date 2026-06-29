@@ -84,6 +84,48 @@ Self-similar ratio at N=1000: **3.044**
 
 ---
 
+## The Zeta Index — Spectral Wavelengths
+
+Each Riemann zero ρₙ = ½ + iγₙ has a **spectral wavelength in logarithmic space**:
+
+```
+λₙ = 2π / γₙ
+```
+
+The zero resolves prime p when its linear-space wavelength at p is ≤ the local prime gap (≈ log p by PNT):
+
+```
+γₙ ≥ γ*(p) = 2πp / log(p)
+```
+
+**The Zeta Index:**
+
+```
+ζ(p) = min{ n : γₙ ≥ 2πp/log(p) }
+```
+
+**The Double Index:** each prime leaf pₙ of Telperion now has coordinates **(n, ζ(p))**:
+
+- `n = π(p)` — ordinal position (WHERE the prime lives on σ=½)
+- `ζ(p)` — spectral emergence index (WHEN the Riemann spectrum first resolved it)
+
+Notation: **p_{n[ζ(p)]}**
+
+Selected values:
+
+```
+p=2:   p_{1[2]}   — first prime,  second zero resolves it
+p=7:   p_{4[3]}   — fourth prime, third zero resolves it
+p=11:  p_{5[4]}   ★ Monster gap (e₁₁)
+p=17:  p_{7[7]}   ★ Moonshine prime — 7th prime, resolved by 7th zero
+p=31:  p_{11[13]} ★ Moonshine prime
+p=47:  p_{15[20]} ★ Moonshine prime
+```
+
+Engine: `engine/zeta_index_engine.py` | Notebook: `notebooks/05_zeta_index.ipynb`
+
+---
+
 ## Three Coordinate Spaces
 
 The tree is rendered in three coordinate systems simultaneously:
@@ -104,12 +146,14 @@ The tree is rendered in three coordinate systems simultaneously:
 ZeroLatticeTree/
 ├── engine/
 │   ├── fixed_point.py          # Two fixed points, V(n), angular quanta, GAP constant
-│   └── telperion_engine.py     # Main engine: tower, primes, fractal, Fano, Blender export
+│   ├── telperion_engine.py     # Main engine: tower, primes, fractal, Fano, Blender export
+│   └── zeta_index_engine.py    # Spectral wavelengths, zeta index ζ(p), double index
 ├── notebooks/
 │   ├── 01_prime_leaves.ipynb   # Sieve, N-shape distribution, prime gap fractal
 │   ├── 02_cd_tower.ipynb       # Tower table, V(n) plots, prime paths, THE_ANGLE
 │   ├── 03_fermat_survival.ipynb # FLT = ZD cascade, survival table, fractal boundary
-│   └── 04_telperion.ipynb      # Full dataset, three-space visualization, Blender export
+│   ├── 04_telperion.ipynb      # Full dataset, three-space visualization, Blender export
+│   └── 05_zeta_index.ipynb     # Spectral wavelengths, zeta index, double index p_{n[ζ]}
 └── blender/
     ├── zero_tree_tower.py      # Space A: sphere
     ├── zero_tree_planes.py     # Space B: plane stack
