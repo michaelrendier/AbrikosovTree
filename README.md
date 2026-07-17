@@ -1,13 +1,48 @@
-# ZeroLatticeTree
+# AbrikosovTree — The Abrikosov Tree
 
-**The Un-Extinctable (Extinguishable?) Bulk.**  
-**The Primes are the leaves that can not fall off the tree.**
+**Formerly:** ZeroLatticeTree  
+**Formal name:** The Abrikosov Tree  
+**Named after:** Alexei Alexeyevich Abrikosov (1928–2017), Nobel Prize in Physics 2003
+
+**The Un-Extinctable Bulk.**  
+**The Primes are the leaves that cannot fall off the tree.**  
+**The Zeros are the Abrikosov vortices of the prime condensate.**
+
+---
+
+> *"It is His Work."*  
+> — Cody Michael Allison, 2026-06-29, on recognizing that the Riemann Zero Lattice  
+>   is the Abrikosov vortex lattice instantiated in arithmetic space.
+
+---
+
+## The Abrikosov Identification
+
+Alexei Abrikosov (1957) showed that in a Type II superconductor, magnetic flux enters the bulk as **quantized vortex filaments** arranged in a regular lattice — the **Abrikosov vortex lattice**. Each vortex carries exactly one flux quantum Φ₀ = h/2e. The Nobel Prize in Physics 2003 was awarded for this discovery.
+
+The Riemann zeros on σ=½ are the **same structure in arithmetic space**:
+
+```
+TYPE II SUPERCONDUCTOR              PRIME CONDENSATE (This framework)
+──────────────────────────────      ───────────────────────────────────
+Superconducting condensate Ψ     ↔  ξ(s) — the completed zeta function
+Vortex core |Ψ| = 0              ↔  ξ(ρ_n) = 0  (Riemann zero)
+Flux quantum Φ₀ = h/2e           ↔  Winding number = 1 per zero
+Abrikosov vortex lattice          ↔  Riemann zeros on σ=½
+Meissner supercurrent J_s         ↔  Noether current J = −∂L/∂σ
+London penetration depth λ_L      ↔  1/√(Σ_p k(p)) = 1/√∞ = 0
+Type II mixed phase [H_c1, H_c2]  ↔  Critical strip 0 < σ < 1
+```
+
+**The Abrikosov Lock** (2026-06-29): zeros cannot leave σ=½ not merely because the restoring force is infinite (infinite spring constant), but because the operation is **topologically forbidden** — moving a vortex off the equator requires winding numbers to take non-integer intermediate values, which the flux quantization prohibits. The lock is categorical, not just energetic.
+
+Full identification: [Ainulindale/wiki/75_abrikosov_lattice.md](https://github.com/michaelrendier/Ainulindale/wiki/75_abrikosov_lattice.md)
 
 ---
 
 ## What This Is
 
-The **Zero Lattice** is the prime-indexed sub-lattice of the Cayley-Dickson tower — the structure that survives when Fermat's Nightmare shakes everything else loose.
+The **Abrikosov Tree** is the prime factorization tree — the structure that survives when Fermat's Nightmare shakes everything else loose.
 
 It is also called **Telperion**. The White Tree. The tree whose leaves cannot fall.
 
@@ -15,7 +50,9 @@ Every integer passes through nine algebraic levels, from the real numbers ℝ at
 
 A prime has no non-trivial factorization. No zero-divisor pair can form. It reaches T_256 intact.
 
-**This is the same algebraic fact as Fermat's Last Theorem.** FLT (n≥3) and the ZD cascade at k=4 are two languages for one identity. The N-Shape Theorem (proved in [`FermatMonster`](https://github.com/michaelrendier/FourthAgePapers)) makes this precise: the 71 holomorphic c=24 VOAs = the 71 N-shapes = the complete Fermat forbidden zone. The Zero Lattice IS the image of this map projected onto the CD tower.
+**This is the same algebraic fact as Fermat's Last Theorem.** FLT (n≥3) and the ZD cascade at k=4 are two languages for one identity. The N-Shape Theorem (proved in [`FermatMonster`](https://github.com/michaelrendier/FourthAgePapers)) makes this precise: the 71 holomorphic c=24 VOAs = the 71 N-shapes = the complete Fermat forbidden zone. The Abrikosov Tree IS the image of this map projected onto the CD tower.
+
+The **spectral nodes of the Abrikosov Tree** — the positions where the prime condensate vanishes — are the Riemann zeros. These are the Abrikosov vortices: the holes in the condensate, quantized, pinned to σ=½ by the Abrikosov Lock.
 
 ---
 
@@ -24,7 +61,7 @@ A prime has no non-trivial factorization. No zero-divisor pair can form. It reac
 ```
 k=0  ℝ      σ=+1.000  dim=1     ← LEAVES  (prime integers live here)
 k=1  ℂ      σ=+0.750  dim=2
-k=2  ℍ      σ=+0.500  dim=4     ← gravastar shell / σ=½ / critical line
+k=2  ℍ      σ=+0.500  dim=4     ← gravastar shell / σ=½ / critical line / Abrikosov pinning level
 k=3  𝕆      σ=+0.250  dim=8     ← 1 Fano plane
 k=4  𝕊      σ= 0.000  dim=16    ← EQUATOR: first ZD / composites fall here
 k=5  t_32   σ=−0.250  dim=32    ← 4 Fano planes
@@ -37,7 +74,25 @@ Two fixed points span the tower:
 - **The Unit** (k=0): V(1) = 1 exactly. The leaf level.  
 - **T_256** (k=8): V(256) ≈ 0. The root. 32 Fano planes.  
 
-Between them: **GAP = Ω_ZS − d* × log(10) ≈ 7.07×10⁻⁴** — the minimum crossing energy.
+Between them: **GAP = Ω_ZS − d* × log(10) ≈ 7.07×10⁻⁴** — the minimum crossing energy (= BCS gap analog of the prime condensate).
+
+---
+
+## The Abrikosov Lattice — The Spectral Nodes
+
+The Riemann zeros ρ_n = ½ + it_n form the **Abrikosov Lattice** — a logarithmic vortex lattice on the critical line:
+
+```
+Zero spacing:   Δt_n ≈ 2π / log(t_n / 2π)     (decreases with n — logarithmic compression)
+Zero density:   N(T) ≈ (T/2π) log(T/2πe)       (increases with T)
+```
+
+The logarithmic compression matches the prime distribution (π(x) ~ x/log x). Primes and zeros are Fourier-dual logarithmic lattices — dual descriptions of the same condensate:
+
+```
+Primes (position space):    the condensate — the Abrikosov Tree leaves
+Zeros  (frequency space):   the vortices  — the Abrikosov Lattice nodes
+```
 
 ---
 
@@ -78,7 +133,7 @@ The prime counting function π(x) satisfies the explicit formula:
 π(x) = li(x) − Σ_ρ li(x^ρ) − log(2) + ∫_x^∞ dt / (t(t²−1)log(t))
 ```
 
-Each Riemann zero ρ = ½ + iγ contributes an oscillation. The zeros are the **spectral nodes of the Zero Lattice** — they are the same lens that the Cosmic Telescope focuses on (wiki #72 of [`RiemannHypothesisProof`](https://github.com/michaelrendier/RiemannHypothesisProof)).
+Each Riemann zero ρ = ½ + iγ contributes an oscillation. The zeros are the **Abrikosov vortices of the prime condensate** — they are the same lens that the Cosmic Telescope focuses on (wiki #72 of [`RiemannHypothesisProof`](https://github.com/michaelrendier/RiemannHypothesisProof)).
 
 Self-similar ratio at N=1000: **3.044**
 
@@ -104,20 +159,20 @@ The zero resolves prime p when its linear-space wavelength at p is ≤ the local
 ζ(p) = min{ n : γₙ ≥ 2πp/log(p) }
 ```
 
-**The Double Index:** each prime leaf pₙ of Telperion now has coordinates **(n, ζ(p))**:
+**The Double Index:** each prime leaf pₙ of the Abrikosov Tree has coordinates **(n, ζ(p))**:
 
 - `n = π(p)` — ordinal position (WHERE the prime lives on σ=½)
-- `ζ(p)` — spectral emergence index (WHEN the Riemann spectrum first resolved it)
+- `ζ(p)` — spectral emergence index (WHEN the Abrikosov Lattice first resolved it)
 
 Notation: **p_{n[ζ(p)]}**
 
 Selected values:
 
 ```
-p=2:   p_{1[2]}   — first prime,  second zero resolves it
-p=7:   p_{4[3]}   — fourth prime, third zero resolves it
+p=2:   p_{1[2]}   — first prime,  second Abrikosov vortex resolves it
+p=7:   p_{4[3]}   — fourth prime, third vortex resolves it
 p=11:  p_{5[4]}   ★ Monster gap (e₁₁)
-p=17:  p_{7[7]}   ★ Moonshine prime — 7th prime, resolved by 7th zero
+p=17:  p_{7[7]}   ★ Moonshine prime — 7th prime, resolved by 7th vortex
 p=31:  p_{11[13]} ★ Moonshine prime
 p=47:  p_{15[20]} ★ Moonshine prime
 ```
@@ -143,7 +198,7 @@ The tree is rendered in three coordinate systems simultaneously:
 ## Structure
 
 ```
-ZeroLatticeTree/
+AbrikosovTree/                          (was: ZeroLatticeTree)
 ├── engine/
 │   ├── fixed_point.py          # Two fixed points, V(n), angular quanta, GAP constant
 │   ├── telperion_engine.py     # Main engine: tower, primes, fractal, Fano, Blender export
@@ -153,7 +208,7 @@ ZeroLatticeTree/
 │   ├── 02_cd_tower.ipynb       # Tower table, V(n) plots, prime paths, THE_ANGLE
 │   ├── 03_fermat_survival.ipynb # FLT = ZD cascade, survival table, fractal boundary
 │   ├── 04_telperion.ipynb      # Full dataset, three-space visualization, Blender export
-│   └── 05_zeta_index.ipynb     # Spectral wavelengths, zeta index, double index p_{n[ζ]}
+│   └── 05_zeta_index.ipynb     # Abrikosov vortex wavelengths, zeta index, double index p_{n[ζ]}
 └── blender/
     ├── zero_tree_tower.py      # Space A: sphere
     ├── zero_tree_planes.py     # Space B: plane stack
@@ -197,9 +252,9 @@ Run the Blender scripts from within **Blender → Scripting** editor after gener
 
 | Repository | Content |
 |---|---|
-| [`RiemannHypothesisProof`](https://github.com/michaelrendier/RiemannHypothesisProof) | The RHP proof. The zeros ARE the spectral nodes of this tree. |
+| [`RiemannHypothesisProof`](https://github.com/michaelrendier/RiemannHypothesisProof) | The RHP proof. The Abrikosov vortices ARE the spectral nodes of this tree. |
 | [`FourthAgePapers`](https://github.com/michaelrendier/FourthAgePapers) | FermatMonster engine v0.300. N-Shape Theorem. 71 VOAs. |
-| [`Ainulindale`](https://github.com/michaelrendier/Ainulindale) | The Music of the Ainur. The ontological layer above. |
+| [`Ainulindale`](https://github.com/michaelrendier/Ainulindale) | The Music of the Ainur. The ontological layer above. wiki/75: The Abrikosov Lattice. |
 | [`SedenionSpectralRelativity`](https://github.com/michaelrendier/SedenionSpectralRelativity) | Sedenion geometry and spectral structure. |
 
 ---
@@ -217,7 +272,11 @@ The silver leaves are the ones the Monster exists to account for.
 They were always there. They will always be there.  
 The tree cannot be extinguished.
 
+**The Abrikosov Lock makes this precise**: the Noether current J = −∂L/∂σ has infinite spring constant K = Σ_p k(p) = ∞. London penetration depth λ_L = 1/√K = 0. No deviation from σ=½ penetrates the condensate. The leaves are pinned — not by force, but by topology. The winding number of the prime condensate around each vortex (each zero) is a quantized integer. It cannot change while the condensate is intact. The primes are the condensate. The condensate is intact forever. The vortices cannot leave. The zeros cannot move. The leaves cannot fall.
+
+**His Work** — Abrikosov (1957) — described this in electromagnetic space 66 years before this framework named it in number theory. The mathematics is correct in both domains.
+
 ---
 
 *No free parameters. No renormalization. Failed predictions stay in data.*  
-*Version: 0.100 — 2026-06-29*
+*Version: 0.200 — 2026-06-29 — Abrikosov Lattice identification; directory renamed AbrikosovTree*
