@@ -8,9 +8,11 @@ to T_256 (k=8) — is this tree.  It cannot be extinguished.
 
 The N-shape theorem (proved in FermatMonster engine v0.300):
     The Generalized N-Shape Fermat Equation IS the Monster Group + 70 siblings.
-    71 holomorphic c=24 VOAs = 71 N-shapes = complete Fermat forbidden zone.
+    The 71 holomorphic c=24 VOAs COVER the 16 N-shapes -- they are not in
+    bijection with them; an N-shape is a residue e_k, k in 0..15, so there
+    are 16, and the 71 VOAs distribute across those 16 classes.
     Niemeier root systems cover 13 N-shapes (h mod 16).
-    Monster fills the gap: {e₁, e₁₁, e₁₅} — algebraically unreachable by A/D/E.
+    Monster fills the remaining 3: {e₁, e₁₁, e₁₅} — unreachable by A/D/E. 13+3=16.
 
 Primes map to N-shapes via p mod 16.
 Monster gap primes (p ≡ 1,11,15 mod 16) are Telperion's silver leaves:
@@ -46,11 +48,29 @@ from dataclasses import dataclass, field, asdict
 
 # ── Sibling engine imports ─────────────────────────────────────────────────────
 
-_HERE        = os.path.dirname(os.path.abspath(__file__))
-_FERMAT_DIR  = os.path.join(
-    os.path.dirname(os.path.dirname(_HERE)),  # FourthAgePapers/
-    'FermatMonster', 'engine'
-)
+_HERE = os.path.dirname(os.path.abspath(__file__))
+
+# FermatMonster lives in a SIBLING repo, so its path is resolved by search rather
+# than by a fixed number of '..' hops. The original fixed form assumed this engine
+# sat under FourthAgePapers/; it does not -- AbrikosovTree is a top-level repo
+# (renamed from ZeroLatticeTree), which put FermatMonster one level deeper than
+# the hardcoded path and left this module unimportable. Walk up to ThePlace and
+# take the first layout that exists.
+def _find_fermat_engine() -> str:
+    rel = os.path.join('FourthAgePapers', 'FermatMonster', 'engine')
+    d = _HERE
+    for _ in range(6):
+        d = os.path.dirname(d)
+        for cand in (os.path.join(d, rel),
+                     os.path.join(d, 'FermatMonster', 'engine')):
+            if os.path.isdir(cand):
+                return cand
+    raise ImportError(
+        'FermatMonster/engine not found above %s -- telperion needs it for '
+        'fermat_n_shape_map and the ZD constellations.' % _HERE
+    )
+
+_FERMAT_DIR = _find_fermat_engine()
 sys.path.insert(0, _HERE)
 sys.path.insert(0, _FERMAT_DIR)
 
@@ -537,13 +557,20 @@ def fractal_boundary_data(primes: List[int], N_levels: int = 9) -> Dict:
         'level_boundary':    level_boundary,
         'gap_density_frac':  gap_density,
         'niemeier_density_frac': niemeier_density,
-        'dirichlet_expected': 1.0 / 16,  # asymptotic density per N-shape (≠ 0, i.e., φ(16)=8 coprime)
+        # Asymptotic density per RESIDUE CLASS THAT CAN HOLD PRIMES. Only the 8
+        # residues coprime to 16 (the odd ones) qualify, so Dirichlet gives
+        # 1/phi(16) = 1/8, not 1/16. The even classes hold no primes at all
+        # beyond p=2, so spreading the mass over all 16 halves the target and
+        # makes every odd class look like a 2x excess against it.
+        'dirichlet_expected': 1.0 / 8,
+        'phi_16':             8,
         'note': (
             'Dirichlet: for gcd(ns,16)=1 (the 8 odd N-shapes), '
-            'density → 1/8 asymptotically.  For gcd(ns,16)>1 (even N-shapes), '
-            'density → 0 (only finitely many primes ≤ 2,4,... except p=2). '
-            'The actual density at finite N deviates from the asymptote — these '
-            'deviations are the fractal oscillations driven by L-function zeros.'
+            'density → 1/phi(16) = 1/8 asymptotically.  For gcd(ns,16)>1 (even '
+            'N-shapes), density → 0 (p=2 is the only even prime, and it sits in '
+            'e2). The even classes are therefore not a deficit to be explained. '
+            'The actual density at finite N deviates from the 1/8 asymptote — '
+            'those deviations are the oscillations driven by L-function zeros.'
         ),
     }
 
