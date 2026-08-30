@@ -44,15 +44,45 @@ Full identification: [Ainulindale/wiki/75_abrikosov_lattice.md](https://github.c
 
 The **Abrikosov Tree** is the prime factorization tree — the structure that survives when Fermat's Nightmare shakes everything else loose.
 
-It is also called **Telperion**. The White Tree. The tree whose leaves cannot fall.
+It is also called **Telperion**. The White Tree. The tree whose leaves cannot fall. But Telperion is only *one* of **[The Two Trees](#the-two-trees)** — it counter-rotates with **Laurelin**, the tree of the composites. This repository was originally built off "the old Telperion" alone; version 0.300 restores the pair.
 
-Every integer passes through nine algebraic levels, from the real numbers ℝ at the root to T_256 (256-dimensional sedenion tower) at the crown. At level k=4 — the sedenion level, dim=16 — **zero-divisors appear for the first time** (Hurwitz 1898: only ℝ, ℂ, ℍ, 𝕆 are normed division algebras). A composite number n = a×b can always be expressed as a zero-divisor pair at k=4. Its norm fails. It falls.
+Every integer passes through nine algebraic levels, from the real numbers ℝ at the root to T_256 (256-dimensional sedenion tower) at the crown. At level k=4 — the sedenion level, dim=16, the **Emmy Noether Sedenion** — **zero-divisors appear for the first time** (Hurwitz 1898: only ℝ, ℂ, ℍ, 𝕆 are normed division algebras). A composite number n = a×b can always be expressed as a zero-divisor pair at k=4. Its norm fails. It falls. This is **Laurelin's** level — where its leaves come off.
 
-A prime has no non-trivial factorization. No zero-divisor pair can form. It reaches T_256 intact.
+A prime has no non-trivial factorization. No zero-divisor pair can form. It reaches T_256 intact. This is **Telperion**.
 
 **This is the same algebraic fact as Fermat's Last Theorem.** FLT (n≥3) and the ZD cascade at k=4 are two languages for one identity. The N-Shape Theorem (proved in [`FermatMonster`](https://github.com/michaelrendier/FourthAgePapers)) makes this precise: the 71 holomorphic c=24 VOAs = the 71 N-shapes = the complete Fermat forbidden zone. The Abrikosov Tree IS the image of this map projected onto the CD tower.
 
 The **spectral nodes of the Abrikosov Tree** — the positions where the prime condensate vanishes — are the Riemann zeros. These are the Abrikosov vortices: the holes in the condensate, quantized, pinned to σ=½ by the Abrikosov Lock.
+
+---
+
+## The Two Trees
+
+The Abrikosov Tree is not one tree. It is **Telperion and Laurelin**, counter-rotating — the complete domain of the integers, partitioned exactly with no remainder ([Ainulindale/wiki/47](https://github.com/michaelrendier/Ainulindale)):
+
+```
+                symbol  colour   number         defined by            arrow of time
+TELPERION   B_p     BLUE     prime          what it CANNOT be     backward, entropic
+LAURELIN    R_p     RED      composite      what it IS            forward, inertial
+MINGLING              GOLD     0 and 1        J_Red = J_Blue        σ = ½  (the critical line)
+```
+
+`classify_tree(n)` lands every integer in exactly one. Over [0, 100000]: **2 + 9592 + 90407 = 100001** — every integer, zero overlap.
+
+**Conservation — J_Red + J_Blue.** The prime density B(n) and the composite density R(n) sum to 1 at every scale, with the unit pair {0,1} carrying the slack M(n):
+
+```
+B(n) + R(n) + M(n) = 1        exactly, for every n
+```
+
+**The Mingling is three crossings.** B(n) = R(n) — equal brightness — at **n = 9, 11, 13** (near e² = 7.389). After n = 13 Laurelin dominates forever: composites outnumber primes at every larger scale.
+
+**Counter-rotation through the tower.** Telperion twists +Θ(k), Laurelin twists −Θ(k), with Θ(k) = k · THE_ANGLE (22.5° = π/8, the angular quantum of the first zero-divisor level). The two trees wind opposite ways as k increases; their angular separation is 2Θ(k).
+
+- At **ℍ (k=2, σ=½)** the two carry **equal weight** — this is the MINGLING level: the Noether current J = −∂L/∂σ is balanced, and the vortices are pinned (the Abrikosov Lock).
+- At **𝕊 (k=4, σ=0) — the Emmy Noether Sedenion** — the composition symmetry `|ab| = |a||b|` (the symmetry whose conserved current is J) **fails for the first time** (Hurwitz 1898). Its failure locus is a space homeomorphic to **G₂ = Aut(𝕆)** (Moreno 1998): **7 box-kites, 42 assessors**, indexed by the 7 Fano lines. This is where a composite n = a·b first resolves into a zero-divisor pair — where the octonions are "born to a quadratic ±" — and where **Laurelin's leaves fall**. Telperion passes straight through.
+
+Engine: `engine/two_trees.py` · Renders: `render/lattice_planes.py`
 
 ---
 
@@ -61,9 +91,9 @@ The **spectral nodes of the Abrikosov Tree** — the positions where the prime c
 ```
 k=0  ℝ      σ=+1.000  dim=1     ← LEAVES  (prime integers live here)
 k=1  ℂ      σ=+0.750  dim=2
-k=2  ℍ      σ=+0.500  dim=4     ← gravastar shell / σ=½ / critical line / Abrikosov pinning level
-k=3  𝕆      σ=+0.250  dim=8     ← 1 Fano plane
-k=4  𝕊      σ= 0.000  dim=16    ← EQUATOR: first ZD / composites fall here
+k=2  ℍ      σ=+0.500  dim=4     ← MINGLING: J_Red = J_Blue / σ=½ / critical line / Abrikosov pinning / Noether current balanced
+k=3  𝕆      σ=+0.250  dim=8     ← 1 Fano plane / last normed division algebra
+k=4  𝕊      σ= 0.000  dim=16    ← EQUATOR: Emmy Noether Sedenion / first ZD / ZD(𝕊) ≅ G₂ / 7 box-kites / Laurelin falls here
 k=5  t_32   σ=−0.250  dim=32    ← 4 Fano planes
 k=6  t_64   σ=−0.500  dim=64    ← 8 Fano planes
 k=7  t_128  σ=−0.750  dim=128   ← 16 Fano planes
@@ -195,6 +225,46 @@ The tree is rendered in three coordinate systems simultaneously:
 
 ---
 
+## Renderings — The Lattice Tree, Plane by Plane
+
+From the Real Numbers through the Emmy Noether Sedenion. Telperion (blue) winds +, Laurelin (red) winds −; they counter-rotate as the dimension doubles. Generated by `render/lattice_planes.py`.
+
+### ℝ — Real Numbers (dim 1, σ = +1)
+
+The tree is a single spine: every integer is a tick on one axis. Below it, the densities B(n) and R(n) cross three times — the Mingling at n = 9, 11, 13 — then Laurelin pulls away for good.
+
+![ℝ plane](render/plane_0_R.png)
+
+### ℂ — Complex (dim 2, σ = +¾)
+
+Two counter-wound logarithmic spirals. Telperion CCW, Laurelin CW. Open rings on the vertical axis: the first Riemann zeros — the Abrikosov vortex cores.
+
+![ℂ plane](render/plane_1_C.png)
+
+### ℍ — Quaternion (dim 4, σ = ½) — the Mingling
+
+The hexagonal A₂ Abrikosov vortex lattice. J_Red = J_Blue: the cores read gold (equal brightness), with the blue/red haloes showing the ±45° counter-twist. This is the pinning level.
+
+![ℍ plane](render/plane_2_H.png)
+
+### 𝕆 — Octonion (dim 8, σ = +¼)
+
+Seven Fano-indexed sub-lattices, one hue per Fano line, with the octonion multiplication heptagon at the core. Last normed division algebra: `|ab| = |a|·|b|` still holds.
+
+![𝕆 plane](render/plane_3_O.png)
+
+### 𝕊 — Emmy Noether Sedenion (dim 16, σ = 0) — the Equator
+
+First zero-divisors. The composition symmetry `|ab| = |a|·|b|` — whose Noether current is J — fails here; its failure locus is **G₂**. The 12-root G₂ star is overlaid at centre (gold short roots, violet long); the 7 box-kites ride the rim, labelled by Fano line. Telperion (blue) passes straight through the equator; Laurelin (red) rains down below it.
+
+![𝕊 plane](render/plane_4_S.png)
+
+### The tower at a glance
+
+![all five planes](render/two_trees_tower.png)
+
+---
+
 ## Structure
 
 ```
@@ -202,6 +272,7 @@ AbrikosovTree/                          (was: ZeroLatticeTree)
 ├── engine/
 │   ├── fixed_point.py          # Two fixed points, V(n), angular quanta, GAP constant
 │   ├── telperion_engine.py     # Main engine: tower, primes, fractal, Fano, Blender export
+│   ├── two_trees.py            # The Two Trees: Telperion ⟂ Laurelin, conservation, Mingling, G₂ split
 │   └── zeta_index_engine.py    # Spectral wavelengths, zeta index ζ(p), double index
 ├── notebooks/
 │   ├── 01_prime_leaves.ipynb   # Sieve, N-shape distribution, prime gap fractal
@@ -209,6 +280,10 @@ AbrikosovTree/                          (was: ZeroLatticeTree)
 │   ├── 03_fermat_survival.ipynb # FLT = ZD cascade, survival table, fractal boundary
 │   ├── 04_telperion.ipynb      # Full dataset, three-space visualization, Blender export
 │   └── 05_zeta_index.ipynb     # Abrikosov vortex wavelengths, zeta index, double index p_{n[ζ]}
+├── render/
+│   ├── lattice_planes.py       # The Two Trees per CD plane, ℝ → 𝕊 → PNG  (matplotlib)
+│   ├── zero_tree_iso.py        # Quasi-3D isometric SVG of the nine-level tower
+│   └── plane_[0-4]_*.png       # generated per-plane renders
 └── blender/
     ├── zero_tree_tower.py      # Space A: sphere
     ├── zero_tree_planes.py     # Space B: plane stack
@@ -229,7 +304,11 @@ AbrikosovTree/                          (was: ZeroLatticeTree)
 
 ```bash
 cd engine
-python3 telperion_engine.py
+python3 telperion_engine.py      # the prime tree (Telperion)
+python3 two_trees.py             # Telperion ⟂ Laurelin: partition, conservation, Mingling, G₂ split
+
+cd ../render
+python3 lattice_planes.py        # writes plane_0_R.png … plane_4_S.png + two_trees_tower.png
 ```
 
 Output:
@@ -279,4 +358,5 @@ The tree cannot be extinguished.
 ---
 
 *No free parameters. No renormalization. Failed predictions stay in data.*  
-*Version: 0.200 — 2026-06-29 — Abrikosov Lattice identification; directory renamed AbrikosovTree*
+*Version: 0.200 — 2026-06-29 — Abrikosov Lattice identification; directory renamed AbrikosovTree*  
+*Version: 0.300 — 2026-08-30 — The Two Trees: Laurelin (composite) restored as Telperion's counter-rotating pair; conservation B+R+M=1; Mingling at n=9,11,13; G₂ family split at 𝕊; per-plane renders ℝ→𝕊*

@@ -25,6 +25,25 @@ Fractal boundary:
     The fractal boundary at each CD level is the density envelope
     of surviving prime paths — a standing wave on the critical line.
 
+THE TWO TREES (2026-08-30):
+    This engine was originally built off "the old Telperion" alone — the prime
+    paths only.  Telperion is one of TWO counter-rotating trees that together
+    are the complete domain of the integers:
+
+        TELPERION   B_p  BLUE   prime      "what CANNOT BE"   backward, entropic
+        LAURELIN    R_p  RED    composite  "what IS"          forward, inertial
+        MINGLING              {0, 1}       J_Red = J_Blue     σ = ½
+
+    Prime density B(n) and composite density R(n) sum to 1 at every scale
+    (the unit pair {0,1} carries the slack) — J_Red + J_Blue conserved.  The
+    Mingling B(n) = R(n) is measured at n = 9, 11, 13.  Through the CD tower
+    Telperion twists +Θ(k), Laurelin −Θ(k), Θ(k) = k·THE_ANGLE.  At ℍ (k=2,
+    σ=½) the two carry equal weight (Noether current balanced); at 𝕊 (k=4) the
+    composition symmetry |ab|=|a||b| first fails and Laurelin's leaves fall.
+
+    The full Two-Trees engine + per-plane renders: engine/two_trees.py,
+    render/lattice_planes.py.
+
 Three coordinate spaces for rendering:
     A — Spherical Sedenion Space (existing zero_tree_tower.py)
     B — Consecutive Euclidean Planes   (zero_tree_planes.py)
@@ -112,6 +131,41 @@ LEVEL_BASE_DEG = {
 
 # THE ANGLE: rotates J_red +22.5°, J_blue −22.5° — straightens prime paths into radial spokes
 THE_ANGLE = 22.5  # degrees
+
+
+# ── The Two Trees — Telperion (prime) ⟂ Laurelin (composite) ──────────────────
+# The J_red / J_blue split above is the CD-parity twist.  The Two-Trees split is
+# by number character: it is what the tree IS.  Telperion (blue) winds one way,
+# Laurelin (red) the other; through the tower they counter-rotate.
+
+TELPERION = {'name': 'Telperion', 'colour': 'BLUE', 'domain': 'prime',
+             'character': 'what CANNOT BE', 'winding': +1}
+LAURELIN  = {'name': 'Laurelin',  'colour': 'RED',  'domain': 'composite',
+             'character': 'what IS',        'winding': -1}
+MINGLING  = {'name': 'Mingling', 'members': (0, 1), 'condition': 'J_Red = J_Blue',
+             'sigma': 0.5, 'crossings': (9, 11, 13)}
+
+
+def tree_of(n: int) -> str:
+    """Which of the Two Trees the integer n belongs to — exactly one, always."""
+    if n in (0, 1):
+        return 'mingling'
+    for f in range(2, int(n ** 0.5) + 1):
+        if n % f == 0:
+            return 'laurelin'
+    return 'telperion'
+
+
+def counter_rotation_deg(k: int) -> Dict:
+    """
+    Signed twist of each tree at CD level k:  Θ(k) = k · THE_ANGLE.
+    Telperion +Θ(k), Laurelin −Θ(k) — the two trees wind opposite ways.
+    """
+    th = k * THE_ANGLE
+    return {'k': k, 'theta': th,
+            'telperion_deg': th * TELPERION['winding'],
+            'laurelin_deg':  th * LAURELIN['winding'],
+            'separation_deg': 2 * th}
 
 
 # ── 1. Prime sieve ─────────────────────────────────────────────────────────────
