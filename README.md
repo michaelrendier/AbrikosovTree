@@ -355,6 +355,26 @@ The tree cannot be extinguished.
 
 **His Work** — Abrikosov (1957) — described this in electromagnetic space 66 years before this framework named it in number theory. The mathematics is correct in both domains.
 
+### The un-sieve residual — where the silver leaves are born (2026-08-30)
+
+Telperion's book (the sieve) strikes each composite out on the pass of its
+**smallest** prime factor — a compact, front-loaded process finished by the
+prime **313** (`p² ≤ 10⁵`). Laurelin's book (the **un-sieve**, from the
+ground state "Just Prime Numbers") births each composite when its
+**largest** prime factor is switched on — a broad process not finished until
+the prime **49 999** (`2p ≤ 10⁵`).
+
+**The two books do not overlap in range.** The sieve finishes killing at
+`√N`; **60.5 %** of every composite is born after that, decided by primes
+that strike nothing — `H(C) − H(A) = +7.19 bits` of spreading. That gap
+between `√N` and `N/2` is the construction-side shadow of a mass gap, and it
+is the same silver-leaf population the Monster exists to account for: the
+composites whose *existence* is fixed by primes the extinction process never
+touches. The winding number that pins each vortex is set at **birth**, in
+Laurelin's book, not at extinction. Engine:
+`FactoralDecomposition/engine/lineage.py::un_sieve`;
+`RiemannHypothesisProof/ADDENDUM_recursive_unsieve_2026-08-30.md`.
+
 ---
 
 *No free parameters. No renormalization. Failed predictions stay in data.*  
