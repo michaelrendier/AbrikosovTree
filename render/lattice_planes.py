@@ -16,7 +16,13 @@ Real Numbers through the Emmy Noether Sedenion:
                                 division algebra (Hurwitz 1898).
     render/plane_4_S.png   𝕊  — the Emmy Noether Sedenion: first zero-divisors,
                                 the G₂ 7-box-kite split, Laurelin's leaves fall.
-    render/two_trees_tower.png  — all five planes as a small-multiples strip.
+    render/plane_5_T_32.png … render/plane_13_T_8192.png
+                           — the higher tower, one generic plane per level:
+                             the ZD equator, Telperion-through / Laurelin-fallen,
+                             the ±Θ(k) counter-twist, and the 2^k axis fan
+                             densifying to a continuum.  RSA-2048 lives at
+                             T_2048 (k=11).
+    render/two_trees_tower.png  — all fourteen planes as a small-multiples grid.
 
 Telperion winds +Θ(k), Laurelin winds −Θ(k), Θ(k) = k·22.5°: through the tower
 the two trees counter-rotate.  Conservation B(n) + R(n) + M(n) = 1 holds at
@@ -297,25 +303,131 @@ def plane_S():
     return _save(fig, 'plane_4_S.png')
 
 
+# ── T_32 … T_8192 : the higher tower, one generic plane per level ─────────
+#
+# Same visual language as 𝕊 (all levels k ≥ 4 are zero-divisor levels): the
+# ZD equator, Telperion-through / Laurelin-fallen, the two counter-wound
+# spirals at ±Θ(k), and the 2^k axis fan.  What changes with depth: σ(k) =
+# 1 − k/4 runs negative, the twist Θ(k) = k·22.5° keeps accumulating, the
+# axis fan (2^k directions, angular quantum 360°/2^k) densifies until — from
+# T_512 up — the direction set reads as a continuum: no single signal
+# resolves from below.  RSA-2048's modulus lives at T_2048 (k = 11).
+
+def plane_T(k):
+    dim = 2 ** k
+    sigma = 1.0 - k / 4.0
+    theta = TT.twist(k)                       # cumulative twist, degrees
+    n_fano = 2 ** (k - 3)
+    name = TT.CD_NAMES[k]
+    label = TT.CD_LABELS[k]
+    lat = TT.lattice_in_plane(k, N=N)
+    dense = dim > 256                         # axis fan has merged into a disc
+
+    note = (f'dim {dim} — post-sedenion zero-divisor level.  σ = {sigma:+.2f}, '
+            f'Θ({k}) = {theta:.1f}° cumulative twist.\n'
+            f'{n_fano} Fano planes; box-kite families grow with the dimension. '
+            f'Angular quantum 360°/{dim} = {360.0 / dim:.4g}°.\n'
+            + ('The 2^k axis fan is now a continuum — from below the tower, no '
+               'single signal resolves.'
+               if dense else
+               'Telperion passes straight through the equator; Laurelin\'s '
+               'leaves fall.'))
+    if k == 11:
+        note += '\nRSA-2048: the 2048-bit modulus sits at THIS level of the tower.'
+
+    fig, ax = _frame((10, 10), name, label, sigma, note)
+    lim = math.log(N) * 1.15
+
+    # zero-divisor equator
+    ax.axhline(0, color=ZDLINE, lw=1.5, alpha=0.85)
+    ax.text(-lim * 0.98, 0.22, f'zero-divisor equator   σ = {sigma:+.2f}',
+            color=ZDLINE, fontsize=9)
+
+    # the 2^k axis fan — individual rays while they still resolve, else a disc
+    if dense:
+        ax.add_patch(plt.Circle((0, 0), lim, color='#141c33', alpha=0.85, zorder=0))
+        for e in range(72):
+            a = e * math.pi / 36
+            ax.plot([0, lim * math.cos(a)], [0, lim * math.sin(a)],
+                    color='#20304f', lw=0.6, alpha=0.5, zorder=0)
+        ax.add_patch(plt.Circle((0, 0), lim, fill=False, ec='#33405e', lw=1.0))
+    else:
+        step = max(1, dim // 120)
+        for e in range(0, dim, step):
+            a = 2 * math.pi * e / dim
+            ax.plot([0, lim * math.cos(a)], [0, lim * math.sin(a)],
+                    color='#2b3650', lw=0.6, zorder=0)
+
+    # the two counter-wound guide spirals at ±Θ(k)
+    tt = np.linspace(math.log(2), math.log(N), 400)
+    span = math.log(N) - math.log(2)
+    base = (tt - math.log(2)) / span * 3.0 * 2 * math.pi
+    thk = math.radians(theta)
+    for wind, col in ((+1, BLUE), (-1, RED)):
+        a = wind * (base + thk)
+        ax.plot(tt * np.cos(a), tt * np.sin(a), color=col, lw=0.8, alpha=0.30)
+
+    # Telperion through (upper half), Laurelin fallen (below the equator)
+    for pt in lat['telperion']:
+        ax.plot(pt['x'], abs(pt['y']), 'o', ms=4.2,
+                color=SILVER if pt['silver'] else BLUE, alpha=0.92)
+    for pt in lat['laurelin']:
+        yy = -abs(pt['y']) - 0.4
+        ax.plot([pt['x'], pt['x']], [-0.05, yy], color=RED, lw=0.45, alpha=0.28)
+        ax.plot(pt['x'], yy, 'v', ms=3.3, color=RED, alpha=0.5)
+
+    # the accumulated counter-twist, drawn as two short arcs off the +x axis
+    ra = lim * 0.30
+    for sgn, col in ((+1, BLUE), (-1, RED)):
+        arc = np.radians(np.linspace(0, sgn * theta, 60))
+        ax.plot(ra * np.cos(arc), ra * np.sin(arc), color=col, lw=2.0, alpha=0.9)
+    ax.text(ra * 1.05, 0, f'Θ = {theta:.0f}°', color=GREY, fontsize=9, va='center')
+
+    # RSA-2048 callout
+    if k == 11:
+        ax.add_patch(plt.Circle((0, 0), lim * 0.62, fill=False, ec=GOLD,
+                                lw=1.6, ls='--'))
+        ax.text(0, lim * 0.62 + 0.25, 'RSA-2048', color=GOLD, fontsize=11,
+                ha='center', va='bottom', fontweight='bold')
+
+    ax.plot(0, 0, 'o', ms=12, color=GOLD)
+    ax.set_aspect('equal')
+    ax.set_xlim(-lim, lim); ax.set_ylim(-lim, lim)
+    ax.set_xticks([]); ax.set_yticks([])
+    return _save(fig, f'plane_{k}_{name}.png')
+
+
 # ── the strip ─────────────────────────────────────────────────────────────
+
+_TOWER_NAMES = ['ℝ', 'ℂ', 'ℍ', '𝕆', '𝕊', 'T_32', 'T_64', 'T_128', 'T_256',
+                'T_512', 'T_1024', 'T_2048', 'T_4096', 'T_8192']
+
 
 def tower_strip(paths):
     imgs = [plt.imread(p) for p in paths]
-    fig, axes = plt.subplots(1, len(imgs), figsize=(4.2 * len(imgs), 4.5))
-    for ax, im, nm in zip(axes, imgs, ['ℝ', 'ℂ', 'ℍ', '𝕆', '𝕊']):
-        ax.imshow(im); ax.set_xticks([]); ax.set_yticks([])
-        for s in ax.spines.values():
-            s.set_edgecolor('#33405e')
-        ax.set_title(nm, color=FG, fontsize=17)
-    fig.suptitle('The Abrikosov Tree as The Two Trees   —   ℝ → ℂ → ℍ → 𝕆 → 𝕊   '
-                 '(Telperion + / Laurelin −, counter-rotating)',
-                 color=FG, fontsize=13)
-    fig.tight_layout()
+    ncol = 7
+    nrow = -(-len(imgs) // ncol)               # ceil
+    fig, axes = plt.subplots(nrow, ncol, figsize=(3.5 * ncol, 3.7 * nrow))
+    axes = np.atleast_1d(axes).ravel()
+    for i, ax in enumerate(axes):
+        if i < len(imgs):
+            ax.imshow(imgs[i]); ax.set_title(_TOWER_NAMES[i], color=FG, fontsize=14)
+            for s in ax.spines.values():
+                s.set_edgecolor('#33405e')
+        else:
+            ax.set_visible(False)
+        ax.set_xticks([]); ax.set_yticks([])
+    fig.suptitle('The Abrikosov Tree as The Two Trees   —   ℝ → ℂ → ℍ → 𝕆 → 𝕊 → '
+                 'T_32 → … → T_8192      (Telperion + / Laurelin −, counter-rotating; '
+                 'RSA-2048 at T_2048)',
+                 color=FG, fontsize=12)
+    fig.tight_layout(rect=(0, 0, 1, 0.96))
     return _save(fig, 'two_trees_tower.png')
 
 
 if __name__ == '__main__':
     outs = [plane_R(), plane_C(), plane_H(), plane_O(), plane_S()]
+    outs += [plane_T(k) for k in range(5, 14)]      # T_32 … T_8192
     strip = tower_strip(outs)
     for p in outs + [strip]:
         print('  written:', os.path.relpath(p, os.path.dirname(_HERE)))

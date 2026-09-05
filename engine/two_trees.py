@@ -101,12 +101,20 @@ MINGLING = {
     'note':     'neither prime nor composite; the identities of ADD (0) and SCALE (1)',
 }
 
-# CD tower — same σ law as the rest of the engine: σ(k) = 1 − k/4
+# CD tower — same σ law as the rest of the engine: σ(k) = 1 − k/4.
+# Levels 0-8 are the canonical physics tower (see N_LEVELS / cd_tower()).
+# Levels 9-13 are named for the higher-order exploration only — the trees'
+# counter-rotation and the zero-divisor structure keep going, and RSA-2048
+# lives at T_2048 (k=11).  cd_tower() still stops at N_LEVELS; lattice_in_plane
+# and the renderer read these names directly for k up to 13 (T_8192).
 CD_NAMES = {0: 'ℝ', 1: 'ℂ', 2: 'ℍ', 3: '𝕆', 4: '𝕊',
-            5: 't_32', 6: 't_64', 7: 't_128', 8: 'T_256'}
+            5: 'T_32', 6: 'T_64', 7: 'T_128', 8: 'T_256',
+            9: 'T_512', 10: 'T_1024', 11: 'T_2048', 12: 'T_4096', 13: 'T_8192'}
 CD_LABELS = {0: 'Real Numbers', 1: 'Complex', 2: 'Quaternion',
              3: 'Octonion', 4: 'Emmy Noether Sedenion',
-             5: 't_32', 6: 't_64', 7: 't_128', 8: 'T_256'}
+             5: 'Trigintaduonion (32-ion)', 6: '64-ion', 7: '128-ion',
+             8: '256-ion', 9: '512-ion', 10: '1024-ion',
+             11: '2048-ion  (RSA-2048)', 12: '4096-ion', 13: '8192-ion'}
 N_LEVELS       = 9
 FIRST_ZD_LEVEL = 4        # 𝕊: |ab| = |a||b| fails; Laurelin's leaves fall
 MINGLING_LEVEL = 2        # ℍ: σ = ½, Noether current balanced
