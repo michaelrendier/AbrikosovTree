@@ -23,6 +23,11 @@ Real Numbers through the Emmy Noether Sedenion:
                              densifying to a continuum.  RSA-2048 lives at
                              T_2048 (k=11).
     render/two_trees_tower.png  — all fourteen planes as a small-multiples grid.
+    render/plane_0b_R_orthogonal.png  — ℝ⁻: negative primes, the −/− sheet,
+                             half-turn (prime) vs full-turn (composite).
+    render/plane_0c_ulam_sphere.png  — Ulam on a spherical polar lift: the two
+                             infinities as the two poles; a zeta-index
+                             gyroscope panel (tangle, with a lock arc).
 
 Telperion winds +Θ(k), Laurelin winds −Θ(k), Θ(k) = k·22.5°: through the tower
 the two trees counter-rotate.  Conservation B(n) + R(n) + M(n) = 1 holds at
@@ -232,6 +237,142 @@ def plane_R_orthogonal():
              'half-turn ⇔ prime    ·    full-turn ⇔ composite',
              color=GREY, fontsize=9.5, va='bottom')
     return _save(fig, 'plane_0b_R_orthogonal.png')
+
+
+# ── Ulam on the Riemann sphere — the two infinities become the two poles ──
+#
+# Ulam's square spiral is full of FLATTENING ARTIFACTS: the prime diagonals
+# (4n²+bn+c families) are straight only because the lattice is flat.  Lift
+# the Sacks form (|z| = √n, arg z = 2π√n) by stereographic projection —
+# |z|² = n gives Z = (n−1)/(n+1): n=1 lands on the EQUATOR (the Mingling
+# ring, σ=½), primes spiral up toward the north pole (Telperion ∞), the
+# −n / Laurelin sheet spirals down toward the south pole (Laurelin −∞).
+# TWO infinities, one per tree — a BIFURCATION.  Banach–Tarski: the free
+# group F₂ = <a,b> of rotations is paradoxical, and F₂ is exactly the CD
+# tower's binary Cayley graph with the two counter-wound trees as its
+# generators — the two half-structures reassemble by ROTATION into one
+# sphere.  "Spherical from bifurcated."
+#
+# Panel B hyper-gyroscopes the axis by the ZETA INDEX: γ*(p) = 2πp/ln p,
+# and the precession ψ_k = 2π·frac(γ*(p_k)/2π).  The √n winding and the
+# zeta precession are two incommensurate periods — the track is a tangled
+# ball of yarn on the sphere, except where frac(γ*/2π) briefly holds still
+# (a commensurability) and it locks into a clean rosette.
+
+def _ortho(xyz, az=-0.62, el=0.42):
+    """hand-rolled orthographic camera (Axes3D is broken in this env)."""
+    x, y, z = xyz
+    ca, sa = math.cos(az), math.sin(az)
+    x1, y1 = x * ca - y * sa, x * sa + y * ca
+    cb, sb = math.cos(el), math.sin(el)
+    y2, z2 = y1 * cb - z * sb, y1 * sb + z * cb
+    return x1, z2, y2                       # screen x, screen y, depth (y2)
+
+
+def _sphere_wire(ax, hemis_split=False):
+    for lat in np.linspace(-math.pi / 2, math.pi / 2, 9)[1:-1]:
+        u = np.linspace(0, 2 * math.pi, 160)
+        pts = [_ortho((math.cos(lat) * math.cos(t), math.cos(lat) * math.sin(t),
+                       math.sin(lat))) for t in u]
+        ax.plot([p[0] for p in pts], [p[1] for p in pts], color='#182238', lw=0.5)
+    for j, lon in enumerate(np.linspace(0, math.pi, 9)[:-1]):
+        v = np.linspace(-math.pi / 2, math.pi / 2, 90)
+        pts = [_ortho((math.cos(t) * math.cos(lon), math.cos(t) * math.sin(lon),
+                       math.sin(t))) for t in v]
+        c = '#2c4166' if hemis_split and j % 2 else '#182238'
+        ax.plot([p[0] for p in pts], [p[1] for p in pts], color=c, lw=0.5)
+    ang = np.linspace(0, 2 * math.pi, 240)
+    ax.plot(np.cos(ang), np.sin(ang), color='#33405e', lw=1.0)          # the limb
+    eq = [_ortho((math.cos(t), math.sin(t), 0.0)) for t in ang]
+    ax.plot([p[0] for p in eq], [p[1] for p in eq], color=GOLD, lw=1.2, alpha=0.65)
+    ax.set_xlim(-1.15, 1.15); ax.set_ylim(-1.15, 1.15)
+
+
+def _lift(n, nmax, twist=0.0, nutate=0.0):
+    """longitude = 2π√n (+twist) — the Sacks arms; colatitude carried by ln n
+    across a hemisphere (n small near the south pole, n large near the north);
+    optional pole nutation about the screen y-axis."""
+    lon = 2 * math.pi * math.sqrt(n) + twist
+    f = (math.log(n) - math.log(2)) / (math.log(nmax) - math.log(2))
+    colat = math.pi * (0.94 - 0.88 * f)                    # ~169 deg down to ~11 deg
+    x = math.sin(colat) * math.cos(lon)
+    y = math.sin(colat) * math.sin(lon)
+    z = math.cos(colat)
+    y, z = (y * math.cos(nutate) - z * math.sin(nutate),
+            y * math.sin(nutate) + z * math.cos(nutate))
+    return x, y, z
+
+
+def plane_ulam_sphere():
+    NN = 4000
+    sieve = [False, False] + [True] * (NN - 1)
+    for i in range(2, int(NN ** 0.5) + 1):
+        if sieve[i]:
+            for j in range(i * i, NN + 1, i):
+                sieve[j] = False
+    primes = [n for n in range(2, NN + 1) if sieve[n]]
+
+    fig = plt.figure(figsize=(12, 15))
+    fig.subplots_adjust(top=0.9, bottom=0.03, left=0.03, right=0.98, hspace=0.05)
+    axA = fig.add_subplot(2, 1, 1); axB = fig.add_subplot(2, 1, 2)
+    fig.suptitle("Ulam's spiral on a spherical polar lift        the two infinities "
+                 "= the two poles", color=FG, fontsize=15, x=0.05, ha='left', y=0.965)
+    fig.text(0.05, 0.935,
+             'longitude = 2π√n (the Sacks arms); colatitude carried by ln n over a hemisphere.\n'
+             'small n at the south pole; primes climb to Telperion ∞ (north), the −n / Laurelin '
+             'sheet to Laurelin −∞ (south).  gold = the equator / Mingling, σ = ½.',
+             color=GREY, fontsize=9.5, va='top')
+
+    # ── A : the static spherical lift ────────────────────────────────────
+    axA.set_aspect('equal'); axA.set_xticks([]); axA.set_yticks([])
+    _sphere_wire(axA, hemis_split=True)
+    P = sorted(((_ortho(_lift(p, NN)), p) for p in primes), key=lambda q: q[0][2])
+    for (sx, sy, dep), p in P:
+        front = dep > 0
+        axA.plot(sx, sy, 'o', ms=2.3 if front else 1.4,
+                 color=BLUE if front else '#334263',
+                 alpha=0.9 if front else 0.4, zorder=3 if front else 1)
+    ln = [_ortho(_lift(p, NN)) for p in primes]
+    axA.plot([q[0] for q in ln], [q[1] for q in ln], color=BLUE, lw=0.3, alpha=0.35, zorder=2)
+    for pole, col, lab, dy in ((1, SILVER, 'Telperion  -> inf', 8),
+                               (-1, RED, 'Laurelin  . -inf', -14)):
+        sx, sy, _ = _ortho((0, 0, pole))
+        axA.plot(sx, sy, 'o', ms=7, color=col, zorder=6)
+        axA.annotate(lab, (sx, sy), textcoords='offset points', xytext=(8, dy),
+                     color=col, fontsize=9)
+    fig.text(0.05, 0.508,
+             "A — the static lift.  Ulam's flat diagonals unbend into arcs bound for the pole.\n"
+             'F2 = <Telperion, Laurelin> is the Banach-Tarski rotation group: two counter-wound '
+             'halves reassemble by rotation into one sphere — spherical from bifurcated.',
+             color=FG, fontsize=10, va='bottom')
+
+    # ── B : the zeta-index gyroscope ────────────────────────────────────
+    axB.set_aspect('equal'); axB.set_xticks([]); axB.set_yticks([])
+    _sphere_wire(axB)
+    fr = [(p / math.log(p)) % 1.0 for p in primes]                # frac(gamma*/2pi)
+    track = []
+    for k, p in enumerate(primes):
+        pt = _lift(p, NN, twist=2 * math.pi * fr[k], nutate=1.0 * (fr[k] - 0.5))
+        track.append((_ortho(pt), p, k))
+    axB.plot([t[0][0] for t in track], [t[0][1] for t in track],
+             color='#3a4a72', lw=0.4, alpha=0.5, zorder=2)          # the tangle
+    w = 12
+    lo = min((float(np.var(fr[i:i + w])), i) for i in range(len(fr) - w))[1]
+    for (sx, sy, dep), p, k in track:
+        inlock = lo <= k < lo + w
+        axB.plot(sx, sy, 'o', ms=3.6 if inlock else 1.8,
+                 color=GOLD if inlock else (BLUE if dep > 0 else '#334263'),
+                 alpha=0.95 if inlock else 0.65,
+                 zorder=5 if inlock else (3 if dep > 0 else 1))
+    seg = [t[0] for t in track if lo <= t[2] < lo + w]
+    axB.plot([q[0] for q in seg], [q[1] for q in seg], color=GOLD, lw=1.5, alpha=0.95, zorder=6)
+    fig.text(0.05, 0.03,
+             'B — the axis precessing / nutating by frac(p / ln p) (the zeta index).\n'
+             f'generically a tangled ball of yarn; the gold arc (primes {primes[lo]}..'
+             f'{primes[lo + w - 1]}) is where frac(p/ln p) briefly holds still — a near-'
+             'commensurability — and the track locks into a rosette.',
+             color=FG, fontsize=10, va='bottom')
+    return _save(fig, 'plane_0c_ulam_sphere.png')
 
 
 # ── ℂ : two counter-wound spirals + the critical line ──────────────────────
@@ -527,6 +668,7 @@ if __name__ == '__main__':
     outs = [plane_R(), plane_C(), plane_H(), plane_O(), plane_S()]
     outs += [plane_T(k) for k in range(5, 14)]      # T_32 … T_8192
     strip = tower_strip(outs)                        # the tower (14 levels)
-    ortho = plane_R_orthogonal()                     # companion to plate 0, not a tower level
-    for p in outs + [strip, ortho]:
+    companions = [plane_R_orthogonal(),              # companions to plate 0 —
+                  plane_ulam_sphere()]               # not tower levels
+    for p in outs + [strip] + companions:
         print('  written:', os.path.relpath(p, os.path.dirname(_HERE)))
