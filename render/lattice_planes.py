@@ -136,6 +136,104 @@ def plane_R():
     return _save(fig, 'plane_0_R.png')
 
 
+# ── ℝ⁻ : the orthogonal real line — negative primes, and the −/− sheet ────
+#
+# z → −z on ℝ is w → 1/w on the Smith chart (Cayley w = (z−1)/(z+1)):
+# (−z−1)/(−z+1) = (z+1)/(z−1) = 1/w — inversion in the unit circle.  So ℝ⁻ is
+# the Smith-inverse of ℝ⁺; the two cross the |w|=1 circle orthogonally.  That
+# inversion is also the Apollonian gasket's generator (Smith ⊥ gasket ≈
+# Julia ⊥ Mandelbrot: dynamical ⊥ parameter).
+#
+# The south half — "where the leaves fall" — is shared by two populations:
+#   · a NEGATIVE PRIME  −p :  z → −z, one half-turn (π).  Still irreducible —
+#     its only split is the unit (−1)·p.  Half-turn chord, no interior.
+#   · the −/− SHADOW of a positive composite n = (−a)(−b) :  arg π+π = 2π,
+#     a FULL turn — it closes back onto +n on the flat circle, but sits one
+#     winding out on the helix.  Full-turn chord = a real factor route exists.
+# Half-turn chord ⇔ prime.  Full-turn chord ⇔ composite.  Same destination,
+# different itinerary, opposite phase order — the θ→β (factoring) direction.
+
+def plane_R_orthogonal():
+    top = 120
+    primes = set(TT.prime_sieve(top))
+    fig = plt.figure(figsize=(12, 14))
+    fig.subplots_adjust(top=0.885, bottom=0.075, left=0.07, right=0.955, hspace=0.34)
+    ax0 = fig.add_subplot(3, 1, 1)                     # the ℝ⁻ number line (thin)
+    ax1 = fig.add_subplot(3, 1, (2, 3))               # the two-sheet helix (big)
+
+    fig.suptitle('ℝ⁻   —   the orthogonal real line        z → −z  ≡  w → 1/w  (Smith inversion)',
+                 color=FG, fontsize=15, x=0.07, ha='left', y=0.965)
+    fig.text(0.07, 0.935,
+             'the mirror of plate 0 through the origin.  −p is still Telperion (prime, blue): a '
+             'negative prime is irreducible — only the unit (−1)·p.\n'
+             'ℝ⁺ and ℝ⁻ are Smith-chart inverses (w ↔ 1/w), meeting the |w|=1 circle '
+             'orthogonally — the gasket / Julia ⊥ Mandelbrot seam.',
+             color=GREY, fontsize=9.5, va='top')
+
+    # ── panel A : the negative number line ℝ⁻ ──────────────────────────────
+    for n in range(2, top + 1):
+        if n in primes:
+            ax0.vlines(-n, 0, -1.0, color=BLUE, lw=2.2)
+            if n % 16 in (1, 11, 15):
+                ax0.plot(-n, -1.0, 'o', ms=4, color=SILVER)
+        else:
+            ax0.vlines(-n, 0, -0.55, color=RED, lw=1.6, alpha=0.85)
+    for m in (0, -1):
+        ax0.vlines(m, 0.2, -1.25, color=GOLD, lw=3)
+    ax0.axhline(0, color=ZDLINE, lw=1.4, alpha=0.8)
+    ax0.set_xlim(-(top + 2), 2); ax0.set_ylim(-1.5, 0.35); ax0.set_yticks([])
+    ax0.set_xlabel('−n')
+
+    # ── panel B : the two-sheet helix — half-turn vs full-turn ────────────
+    M = 46
+    turns = 3.0
+    span = math.log(M) - math.log(2)
+    ax1.set_aspect('equal')
+
+    def b_of(n):
+        return (math.log(n) - math.log(2)) / span * turns * 2 * math.pi
+
+    def pt(b):
+        return b * math.cos(b), b * math.sin(b)
+
+    ax1.plot(0, 0, 'o', ms=11, color=GOLD, zorder=6)
+    for n in range(2, M + 1):
+        prime = n in primes
+        b0 = b_of(n)
+        x0, y0 = pt(b0)                                # the (+a)(+b) landing
+        col = BLUE if prime else RED
+        ax1.plot(x0, y0, 'o', ms=6.0 if prime else 5.0, color=col,
+                 mec=SILVER if (prime and n % 16 in (1, 11, 15)) else 'none', mew=1.1,
+                 zorder=5)
+        if prime:
+            arc = b0 + np.linspace(0, math.pi, 40)      # −p : one HALF-turn
+            ax1.plot(arc * np.cos(arc), arc * np.sin(arc), color=BLUE, lw=1.0,
+                     alpha=0.45, zorder=3)
+            x1, y1 = pt(b0 + math.pi)
+            ax1.plot(x1, y1, 'o', ms=6.0, mfc='none', mec=BLUE, mew=1.6, zorder=5)
+        else:
+            arc = b0 + np.linspace(0, 2 * math.pi, 72)  # (−a)(−b) : one FULL turn
+            ax1.plot(arc * np.cos(arc), arc * np.sin(arc), color=RED, lw=1.0,
+                     alpha=0.38, zorder=3)
+            x2, y2 = pt(b0 + 2 * math.pi)
+            ax1.plot([x0, x2], [y0, y2], color=RED, lw=0.8, alpha=0.5, ls=':', zorder=4)
+            ax1.plot(x2, y2, 'v', ms=5.2, color=RED, alpha=0.85, zorder=5)
+
+    lim = (turns * 2 * math.pi + 2 * math.pi) * 1.04
+    ax1.set_xlim(-lim, lim); ax1.set_ylim(-lim, lim)
+    ax1.set_xticks([]); ax1.set_yticks([])
+    ax1.set_title('the two sheets — Archimedean helix, radius = accumulated argument   '
+                  '(2..46)', color=FG, fontsize=12, loc='left', pad=8)
+    fig.text(0.07, 0.052,
+             'filled dot = the (+a)(+b) landing.   blue ring = −p, a HALF-turn out (π): a prime '
+             'and its negative associate, no factor route.\n'
+             'red ▽ + dotted radial chord = the (−a)(−b) shadow, a FULL turn out (2π): same n, '
+             'same angle, one winding further — the −/− itinerary.\n'
+             'half-turn ⇔ prime    ·    full-turn ⇔ composite',
+             color=GREY, fontsize=9.5, va='bottom')
+    return _save(fig, 'plane_0b_R_orthogonal.png')
+
+
 # ── ℂ : two counter-wound spirals + the critical line ──────────────────────
 
 def plane_C():
@@ -428,6 +526,7 @@ def tower_strip(paths):
 if __name__ == '__main__':
     outs = [plane_R(), plane_C(), plane_H(), plane_O(), plane_S()]
     outs += [plane_T(k) for k in range(5, 14)]      # T_32 … T_8192
-    strip = tower_strip(outs)
-    for p in outs + [strip]:
+    strip = tower_strip(outs)                        # the tower (14 levels)
+    ortho = plane_R_orthogonal()                     # companion to plate 0, not a tower level
+    for p in outs + [strip, ortho]:
         print('  written:', os.path.relpath(p, os.path.dirname(_HERE)))
