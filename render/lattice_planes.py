@@ -375,6 +375,109 @@ def plane_ulam_sphere():
     return _save(fig, 'plane_0c_ulam_sphere.png')
 
 
+# ── the digit-count ordering — Varda's dome, band by band ────────────────
+#
+# A coarser ordering of the primes than value order: bin by ⌊log_b p⌋ + 1.
+# Within a band it AGREES with value order; between bands it just erases the
+# low digits — value order with the tail cut off ("not that different").  It
+# is the Flashlight-granularity ordering: which zoom level a prime first
+# resolves at.
+#
+# "20 000-digit primes outside the full list of 20 000-digit numbers":
+# there are none — every d-digit prime is one of the 9·10^{d-1} d-digit
+# numbers.  The illusion has two roots.  (1) On a log plot the band edge is
+# fuzzy: a prime just under 10^d sits at the OUTER rim of band d, visually on
+# band d+1's inner rim.  (2) The big ones are found by FORMULA — Mersenne
+# 2^p−1, Proth k·2^n+1 — so you can name a 20k-digit prime without ever
+# walking the 9·10^19999 numbers.  The prime is IN the list; the PATH to it
+# came from outside the enumeration.  Same β→θ / θ→β asymmetry: the forward
+# (multiplicative) map has shortcuts the reverse (sieve) does not.
+
+def plane_digit_order():
+    NN = 200000
+    sieve = [False, False] + [True] * (NN - 1)
+    for i in range(2, int(NN ** 0.5) + 1):
+        if sieve[i]:
+            for j in range(i * i, NN + 1, i):
+                sieve[j] = False
+    primes = [n for n in range(2, NN + 1) if sieve[n]]
+    dmax = len(str(NN))
+    band = {}                                            # d -> [primes]
+    for p in primes:
+        band.setdefault(len(str(p)), []).append(p)
+    mers = [2 ** e - 1 for e in (2, 3, 5, 7, 13, 17) if 2 ** e - 1 <= NN and sieve[2 ** e - 1]]
+
+    fig = plt.figure(figsize=(12, 15))
+    fig.subplots_adjust(top=0.9, bottom=0.055, left=0.05, right=0.965, hspace=0.24)
+    axA = fig.add_subplot(2, 1, 1); axB = fig.add_subplot(2, 1, 2)
+    fig.suptitle('the digit-count ordering        Varda\'s dome, band by band',
+                 color=FG, fontsize=15, x=0.05, ha='left', y=0.965)
+    fig.text(0.05, 0.935,
+             'primes = the stars of the world tree — the leaves that do not fall, the light that '
+             'does not stop.  they pepper the north dome (Riemann / Telperion, spectral) infinitely '
+             'but ever more sparsely;\nthe composites fill the south (Fermat / Laurelin, ordinal) — '
+             'vastly greater measure, the same cardinality ℵ₀.  the |w|=1 equator is where √ and '
+             '1/√ come out of the circle (the branch point of the root).',
+             color=GREY, fontsize=9.3, va='top')
+
+    COLS = ['#ff5a3c', '#ffb03c', '#ffe23c', '#6fff8a', '#6fd0ff', '#8a6fff', '#ff6fe0']
+
+    # ── A : the bands on a log-radius Sacks spiral ──────────────────────
+    axA.set_aspect('equal'); axA.set_xticks([]); axA.set_yticks([])
+    for d in range(1, dmax + 1):
+        r = math.log10(10 ** d)
+        c = [ (r * math.cos(t), r * math.sin(t)) for t in np.linspace(0, 2*math.pi, 240) ]
+        axA.plot([q[0] for q in c], [q[1] for q in c], color='#2b3650', lw=0.8)
+        axA.text(0, r, f'  10^{d}', color=GREY, fontsize=8, ha='left', va='bottom')
+    for d, ps in sorted(band.items()):
+        col = COLS[(d - 1) % len(COLS)]
+        for p in ps[::max(1, len(ps) // 900)]:          # thin the dense bands
+            rr = math.log10(p); th = 2 * math.pi * math.sqrt(p)
+            edge = (10 ** d - p) / (10 ** d - 10 ** (d - 1)) < 0.02   # outer-rim primes
+            axA.plot(rr * math.cos(th), rr * math.sin(th), 'o',
+                     ms=3.0 if edge else 1.6, color=SILVER if edge else col,
+                     alpha=0.95 if edge else 0.7, zorder=3 if edge else 2)
+    for m in mers:
+        rr = math.log10(m); th = 2 * math.pi * math.sqrt(m)
+        axA.plot(rr * math.cos(th), rr * math.sin(th), '*', ms=13, color=GOLD,
+                 mec=FG, mew=0.6, zorder=5)
+        axA.annotate(f'2^{m.bit_length()}−1', (rr * math.cos(th), rr * math.sin(th)),
+                     textcoords='offset points', xytext=(6, 4), color=GOLD, fontsize=8)
+    axA.plot(0, 0, 'o', ms=9, color=GOLD, zorder=6)
+    lim = math.log10(NN) * 1.12
+    axA.set_xlim(-lim, lim); axA.set_ylim(-lim, lim)
+    fig.text(0.05, 0.505,
+             'A — radius = log10 n, so digit count = which ring.  silver = primes within 2% of 10^d '
+             '(the outer rim) — on a log plot they read as the next band\'s inner edge: the\n'
+             '"outside the list" mirage.  gold ★ = Mersenne primes — reached by formula, in a '
+             'band without the band being walked.',
+             color=FG, fontsize=9.6, va='bottom')
+
+    # ── B : value order collapses to digit order ───────────────────────
+    axB.set_yscale('log')
+    axB.set_ylabel('prime  (log)')
+    idx = list(range(1, len(primes) + 1))
+    axB.plot(idx, primes, color=BLUE, lw=0.7, alpha=0.5, label='value order  (every prime its own radius)')
+    step_x, step_y = [], []
+    for d in range(1, dmax + 1):
+        lo_i = next((i for i, p in enumerate(primes) if len(str(p)) == d), None)
+        if lo_i is None:
+            continue
+        hi_i = max(i for i, p in enumerate(primes) if len(str(p)) == d)
+        step_x += [lo_i + 1, hi_i + 1]; step_y += [10 ** (d - 1), 10 ** (d - 1)]
+    axB.plot(step_x, step_y, color=GOLD, lw=2.0, drawstyle='steps-post',
+             label='digit order  (band floor 10^{d-1} — the tail erased)')
+    axB.legend(loc='upper left', facecolor=BG, edgecolor='#33405e', fontsize=9)
+    axB.set_xlim(0, len(primes)); axB.set_ylim(8, NN * 1.15)
+    fig.text(0.05, 0.052,
+             'B — x = prime index π(x).  digit order = value order with the low digits cut off: '
+             'inside a band the two agree, between bands digit order holds flat at 10^(d-1).\n'
+             '"not that different" — a refinement-compatible coarsening: the Fermat ordinal '
+             'order truncated to a scale.',
+             color=FG, fontsize=9.6, va='bottom')
+    return _save(fig, 'plane_0d_digit_order.png')
+
+
 # ── ℂ : two counter-wound spirals + the critical line ──────────────────────
 
 def plane_C():
@@ -669,6 +772,7 @@ if __name__ == '__main__':
     outs += [plane_T(k) for k in range(5, 14)]      # T_32 … T_8192
     strip = tower_strip(outs)                        # the tower (14 levels)
     companions = [plane_R_orthogonal(),              # companions to plate 0 —
-                  plane_ulam_sphere()]               # not tower levels
+                  plane_ulam_sphere(),               # not tower levels
+                  plane_digit_order()]
     for p in outs + [strip] + companions:
         print('  written:', os.path.relpath(p, os.path.dirname(_HERE)))
