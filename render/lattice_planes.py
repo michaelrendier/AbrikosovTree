@@ -28,6 +28,11 @@ Real Numbers through the Emmy Noether Sedenion:
     render/plane_0c_ulam_sphere.png  — Ulam on a spherical polar lift: the two
                              infinities as the two poles; a zeta-index
                              gyroscope panel (tangle, with a lock arc).
+    render/plane_0d_digit_order.png  — the digit-count ordering of the primes
+                             (Varda's dome): value order with the low digits
+                             erased — a refinement-compatible coarsening.  The
+                             log-radius rings and the formula-found Mersenne
+                             primes explain the "primes outside the list" mirage.
 
 Telperion winds +Θ(k), Laurelin winds −Θ(k), Θ(k) = k·22.5°: through the tower
 the two trees counter-rotate.  Conservation B(n) + R(n) + M(n) = 1 holds at
