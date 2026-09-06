@@ -33,6 +33,13 @@ Real Numbers through the Emmy Noether Sedenion:
                              erased — a refinement-compatible coarsening.  The
                              log-radius rings and the formula-found Mersenne
                              primes explain the "primes outside the list" mirage.
+    render/plane_0n_R_native.png … render/plane_13n_T_8192_native.png
+                           — every tower level in Universal Native Space
+                             (r, θ, φ): θ carries tree + scale (Telperion to the
+                             north pole, Laurelin to the south), φ is the complex
+                             phase 2π√n ± Θ(k) carried through, never |z|².  Four
+                             views per level (unrolled surface, (r,φ) disc,
+                             oblique 3-D, axis-down rosette) — nothing hidden.
 
 Telperion winds +Θ(k), Laurelin winds −Θ(k), Θ(k) = k·22.5°: through the tower
 the two trees counter-rotate.  Conservation B(n) + R(n) + M(n) = 1 holds at
@@ -274,21 +281,21 @@ def _ortho(xyz, az=-0.62, el=0.42):
     return x1, z2, y2                       # screen x, screen y, depth (y2)
 
 
-def _sphere_wire(ax, hemis_split=False):
+def _sphere_wire(ax, az=-0.62, el=0.42, hemis_split=False):
     for lat in np.linspace(-math.pi / 2, math.pi / 2, 9)[1:-1]:
         u = np.linspace(0, 2 * math.pi, 160)
         pts = [_ortho((math.cos(lat) * math.cos(t), math.cos(lat) * math.sin(t),
-                       math.sin(lat))) for t in u]
+                       math.sin(lat)), az, el) for t in u]
         ax.plot([p[0] for p in pts], [p[1] for p in pts], color='#182238', lw=0.5)
     for j, lon in enumerate(np.linspace(0, math.pi, 9)[:-1]):
         v = np.linspace(-math.pi / 2, math.pi / 2, 90)
         pts = [_ortho((math.cos(t) * math.cos(lon), math.cos(t) * math.sin(lon),
-                       math.sin(t))) for t in v]
+                       math.sin(t)), az, el) for t in v]
         c = '#2c4166' if hemis_split and j % 2 else '#182238'
         ax.plot([p[0] for p in pts], [p[1] for p in pts], color=c, lw=0.5)
     ang = np.linspace(0, 2 * math.pi, 240)
     ax.plot(np.cos(ang), np.sin(ang), color='#33405e', lw=1.0)          # the limb
-    eq = [_ortho((math.cos(t), math.sin(t), 0.0)) for t in ang]
+    eq = [_ortho((math.cos(t), math.sin(t), 0.0), az, el) for t in ang]
     ax.plot([p[0] for p in eq], [p[1] for p in eq], color=GOLD, lw=1.2, alpha=0.65)
     ax.set_xlim(-1.15, 1.15); ax.set_ylim(-1.15, 1.15)
 
@@ -378,6 +385,131 @@ def plane_ulam_sphere():
              'commensurability — and the track locks into a rosette.',
              color=FG, fontsize=10, va='bottom')
     return _save(fig, 'plane_0c_ulam_sphere.png')
+
+
+# ── the tower in Universal Native Space — (r, θ, φ) per level ────────────
+#
+# The flat planes are Cartesian shadows.  The native form is radial-spherical-
+# complex-polar: the RADIAL part (r = ln n) kept separate from the ANGULAR,
+# and the COMPLEX PHASE carried through — never collapsed to |z|² (the one
+# step with no adjoint).  Per level k:
+#
+#   θ  colatitude  — tree + scale.  Telperion climbs from the σ-equator to the
+#                    NORTH pole (Riemann, +∞); Laurelin falls to the SOUTH
+#                    pole (Fermat, −∞).  Small n sits on the equator (the
+#                    Mingling seed, {0,1}).
+#   φ  azimuth     — the complex phase, 2π√n ± Θ(k).  Telperion winds +, Laurelin
+#                    winds − (the counter-rotation).  Θ(k) = k·22.5° offsets it.
+#   r  radius      — ln n / ln N, the scale coordinate, shown on its own axis.
+#
+# A raster is still 2-D, so each plate carries FOUR views that between them
+# hide nothing: (A) the whole surface unrolled equal-area, (B) the (r, φ)
+# disc down the axis with the phase intact, (C, D) the front and back
+# hemispheres in oblique 3-D.
+
+_NATIVE_ASCII = {0: 'R', 1: 'C', 2: 'H', 3: 'O', 4: 'S'}
+
+
+def _native_name(k):
+    return _NATIVE_ASCII.get(k, TT.CD_NAMES[k])
+
+
+def sphere_native(k, NN=1200):
+    name = _native_name(k)
+    label = TT.CD_LABELS[k]
+    sigma = 1.0 - k / 4.0
+    theta = TT.twist(k)
+    thk = math.radians(theta)
+    dim = 2 ** k
+
+    sieve = bytearray([1]) * (NN + 1)
+    sieve[0] = sieve[1] = 0
+    for i in range(2, int(NN ** 0.5) + 1):
+        if sieve[i]:
+            sieve[i * i::i] = bytearray(len(sieve[i * i::i]))
+    lnlo, lnhi = math.log(2), math.log(NN)
+
+    pts = []                          # (colat, phi, is_prime, silver, f)
+    for n in range(2, NN + 1):
+        ip = bool(sieve[n])
+        f = (math.log(n) - lnlo) / (lnhi - lnlo)
+        wind = 1 if ip else -1
+        phi = (wind * (2 * math.pi * math.sqrt(n) + thk)) % (2 * math.pi)
+        colat = (math.pi / 2) * (1 - f) if ip else (math.pi / 2) * (1 + f)
+        pts.append((colat, phi, ip, ip and (n % 16) in (1, 11, 15), f))
+
+    def col(ip, sv):
+        return (SILVER if sv else BLUE) if ip else RED
+
+    fig = plt.figure(figsize=(13.5, 12.8))
+    gs = fig.add_gridspec(2, 2, hspace=0.22, wspace=0.16,
+                          left=0.065, right=0.965, top=0.83, bottom=0.055)
+    fig.suptitle(f'{name}   —   {label}        σ = {sigma:+.3f}        '
+                 f'Universal Native Space   (r, θ, φ)',
+                 color=FG, fontsize=15, x=0.065, ha='left', y=0.975)
+    fig.text(0.065, 0.945,
+             f'dim {dim}.   θ (colatitude) carries tree + scale — Telperion climbs to the north '
+             f'pole (Riemann +∞), Laurelin falls south (Fermat −∞), small n on the equator.\n'
+             f'φ (azimuth) is the complex phase 2π√n ± Θ({k}), Θ({k}) = {theta:.1f}° — carried '
+             f'through, never collapsed to |z|².   gold = the σ equator.   four views, nothing hidden.',
+             color=GREY, fontsize=9, va='top')
+
+    # ── A : the whole surface, unrolled (Lambert cylindrical equal-area) ──
+    axA = fig.add_subplot(gs[0, 0])
+    axA.set_facecolor('#0b0b18')
+    axA.axhline(0.0, color=GOLD, lw=1.4, alpha=0.75)
+    axA.axvline(thk % (2 * math.pi), color='#8f9ec2', lw=0.9, ls='--')
+    for colat, phi, ip, sv, f in pts:
+        axA.plot(phi, math.cos(colat), 'o', ms=3.0 if ip else 2.0,
+                 color=col(ip, sv), alpha=0.85 if ip else 0.45,
+                 zorder=3 if ip else 2)
+    axA.set_xlim(0, 2 * math.pi); axA.set_ylim(-1.05, 1.05)
+    axA.set_xlabel('φ   complex phase  (azimuth)')
+    axA.set_ylabel('cos θ    north +1  ·  equator 0  ·  south −1')
+    axA.set_title('A — the whole surface, unrolled (equal-area)', color=FG, fontsize=10)
+
+    # ── B : (r, φ) down the axis — the complex phase kept as a true angle ──
+    axB = fig.add_subplot(gs[0, 1], projection='polar')
+    axB.set_facecolor('#0b0b18')
+    for colat, phi, ip, sv, f in pts:
+        axB.plot(phi, f, 'o', ms=2.6 if ip else 1.7,
+                 color=col(ip, sv), alpha=0.7 if ip else 0.35)
+    axB.set_rmax(1.03); axB.set_rticks([0.25, 0.5, 0.75, 1.0])
+    axB.set_rlabel_position(90)
+    axB.tick_params(colors=GREY, labelsize=7)
+    axB.grid(color='#22304c', lw=0.5)
+    axB.set_title('B — (r, φ) down the axis:  r = ln n / ln N,  φ intact',
+                  color=FG, fontsize=10, pad=16)
+
+    # ── C, D : oblique 3-D (front) and axis-down (the winding rosette) ──
+    for cell, az, el, tag in (
+            (gs[1, 0], -0.62, 0.42, 'C — oblique 3-D  (Telperion north, Laurelin south)'),
+            (gs[1, 1], -0.62, 1.35, 'D — from the north pole  (the winding rosette, Θ twist)')):
+        ax = fig.add_subplot(cell)
+        ax.set_aspect('equal'); ax.set_xticks([]); ax.set_yticks([])
+        _sphere_wire(ax, az=az, el=el)
+        proj = []
+        for colat, phi, ip, sv, f in pts:
+            xyz = (math.sin(colat) * math.cos(phi),
+                   math.sin(colat) * math.sin(phi),
+                   math.cos(colat))
+            sx, sy, dep = _ortho(xyz, az, el)
+            proj.append((dep, sx, sy, ip, sv))
+        for dep, sx, sy, ip, sv in sorted(proj, key=lambda q: q[0]):
+            front = dep > 0
+            ax.plot(sx, sy, 'o',
+                    ms=(3.0 if ip else 1.9) if front else (1.5 if ip else 1.0),
+                    color=col(ip, sv) if front else '#33425f',
+                    alpha=(0.9 if ip else 0.5) if front else 0.28,
+                    zorder=3 if front else 1)
+        for pole, pcol, plab in ((1, SILVER, 'N'), (-1, RED, 'S')):
+            sx, sy, _ = _ortho((0, 0, pole), az, el)
+            ax.plot(sx, sy, 'o', ms=6, color=pcol, zorder=6)
+            ax.annotate(plab, (sx, sy), textcoords='offset points',
+                        xytext=(7, 5 if pole > 0 else -12), color=pcol, fontsize=9)
+        ax.set_title(tag, color=FG, fontsize=9.5)
+
+    return _save(fig, f'plane_{k}n_{name}_native.png')
 
 
 # ── the digit-count ordering — Varda's dome, band by band ────────────────
@@ -776,8 +908,9 @@ if __name__ == '__main__':
     outs = [plane_R(), plane_C(), plane_H(), plane_O(), plane_S()]
     outs += [plane_T(k) for k in range(5, 14)]      # T_32 … T_8192
     strip = tower_strip(outs)                        # the tower (14 levels)
+    native = [sphere_native(k) for k in range(14)]   # every level in (r, θ, φ)
     companions = [plane_R_orthogonal(),              # companions to plate 0 —
                   plane_ulam_sphere(),               # not tower levels
                   plane_digit_order()]
-    for p in outs + [strip] + companions:
+    for p in outs + [strip] + native + companions:
         print('  written:', os.path.relpath(p, os.path.dirname(_HERE)))
