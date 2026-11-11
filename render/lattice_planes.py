@@ -265,6 +265,13 @@ def plane_R_orthogonal():
 # generators — the two half-structures reassemble by ROTATION into one
 # sphere.  "Spherical from bifurcated."
 #
+# NOTE 2026-11-11 (two lifts; the code names which one it draws):
+#   LIFT 'stereo'  the one DESCRIBED above: Z = (n−1)/(n+1), n = 1 on the equator, conformal.  NOT implemented in this file.  A zero-tone x^ρ = e^{(½+iγ)u} lifts to a loxodrome
+#                  (constant bearing arctan 2γ, measured to 1e−5°): RiemannHypothesisProof/rhp/zerophase.py `lift_stereo`.
+#   LIFT 'linear'  the one DRAWN here (`_lift`): colatitude linear in ln n, longitude 2π√n (Sacks).  Not conformal: the same zero-tone's bearing wobbles ±1.4° (zero 1).
+#   Winding: 2π√n is Archimedean (h = 1 in θ = 2πh√n; the m-gon spiral is h = √(2/(m−2))); a zero's own winding is γ ln n (RiemannHypothesisProof/docs/zerophase_2026-11-11.md).
+LIFT_KIND = 'linear'
+
 # Panel B hyper-gyroscopes the axis by the ZETA INDEX: γ*(p) = 2πp/ln p,
 # and the precession ψ_k = 2π·frac(γ*(p_k)/2π).  The √n winding and the
 # zeta precession are two incommensurate periods — the track is a tangled
@@ -301,7 +308,7 @@ def _sphere_wire(ax, az=-0.62, el=0.42, hemis_split=False):
 
 
 def _lift(n, nmax, twist=0.0, nutate=0.0):
-    """longitude = 2π√n (+twist) — the Sacks arms; colatitude carried by ln n
+    """LIFT_KIND = 'linear'.  longitude = 2π√n (+twist) — the Sacks arms; colatitude carried by ln n
     across a hemisphere (n small near the south pole, n large near the north);
     optional pole nutation about the screen y-axis."""
     lon = 2 * math.pi * math.sqrt(n) + twist
